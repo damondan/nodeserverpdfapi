@@ -1,12 +1,15 @@
 // logic.js
 const fs = require('fs').promises;
 const path = require('path');
+//const pdfjsLib = require('pdfjs-dist');
+//const pdfjsLib = await import('pdfjs-dist/build/pdf.mjs');
 let limit;
 let pdfjsLib;
 (async () => {
   const pdfjs = await import('pdfjs-dist/build/pdf.mjs');
   pdfjsLib = pdfjs;
 })();
+
 
 (async () => {
   const pLimit = (await import('p-limit')).default;
@@ -45,11 +48,11 @@ async function getPdfBookTitles(subject) {
   }
 }
 
-const standardFontDataUrl = `file://${path.join(
-  path.dirname(require.resolve('pdfjs-dist')),
-  '..',
-  'standard_fonts'
-)}`;
+const pdfjsDistPath = path.dirname(require.resolve('pdfjs-dist'));
+const standardFontDataUrl = `file://${path.join(pdfjsDistPath, '..', 'standard_fonts')}/`; 
+console.log('Resolved pdfjs-dist path:', pdfjsDistPath);
+console.log('Standard font data URL:', standardFontDataUrl);
+
 
 async function searchPdfs(selectedSubject, searchQuery, pdfBookTitles) {
   const folderPath = path.join(__dirname, selectedSubject);
@@ -73,7 +76,7 @@ async function searchPdfs(selectedSubject, searchQuery, pdfBookTitles) {
       const uint8Array = new Uint8Array(dataBuffer);
       // Use pdfjsLib to load the PDF
       console.log('Passing standardFontDataUrl to getDocument:', standardFontDataUrl);
-      const pdf = await pdfjsLib.getDocument({ data: uint8Array},standardFontDataUrl).promise;
+      const pdf = await pdfjsLib.getDocument({ data: uint8Array,standardFontDataUrl}).promise;
       const numPages = pdf.numPages;
       const matchingPages = [];
 

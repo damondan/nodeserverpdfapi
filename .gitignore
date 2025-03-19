@@ -1,0 +1,29 @@
+# Node.js dependencies
+node_modules/
+npm-debug.log
+yarn-error.log
+pnpm-lock.yaml  # If using pnpm (omit if sticking with npm)
+
+# Build output (common for SvelteKit or other frameworks)
+dist/
+build/
+
+# Logs
+logs/
+*.log
+
+# Environment variables
+.env
+.env.local
+.env.*.local
+
+# OS-specific files
+.DS_Store  # macOS
+Thumbs.db  # Windows
+
+.vscode/
+
+*.swp
+*.lock
+
+*.pdf
