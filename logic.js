@@ -48,11 +48,10 @@ async function getPdfBookTitles(subject) {
   }
 }
 
-const pdfjsDistPath = path.dirname(require.resolve('pdfjs-dist'));
-const standardFontDataUrl = `file://${path.join(pdfjsDistPath, '..', 'standard_fonts')}/`; 
+const pdfjsDistPath = path.join(__dirname, 'node_modules', 'pdfjs-dist');
+const standardFontDataUrl = `file://${path.join(pdfjsDistPath, 'standard_fonts')}/`;
 console.log('Resolved pdfjs-dist path:', pdfjsDistPath);
 console.log('Standard font data URL:', standardFontDataUrl);
-
 
 async function searchPdfs(selectedSubject, searchQuery, pdfBookTitles) {
   const folderPath = path.join(__dirname, selectedSubject);
@@ -100,64 +99,5 @@ async function searchPdfs(selectedSubject, searchQuery, pdfBookTitles) {
   const resultsArray = await Promise.all(pdfPromises);
   return Object.assign({}, ...resultsArray.filter(Boolean));
 }
-
-// Example usage
-//searchPdfs('books', 'example', ['Book1', 'Book2']).then(console.log);
-
-// async function searchPdfs(selectedSubject, searchQuery, pdfBookTitles) {
-//   const folderPath = path.join(__dirname, selectedSubject);
-//   const actualTitles = await getPdfBookTitles(selectedSubject);
-//   const results = {};
-//   //MAP transforing into a new array of key value pairs -
-//   const titleMap = new Map(
-//     actualTitles.map((realTitle) => [realTitle.toLowerCase(), realTitle])
-//   );
-
-//   //Begin iterating through titles received from the front end
-//   for (const title of pdfBookTitles) {
-//     //titleMap.get is searching to see if title exists in the map - title.toLowerCase is the key
-//     const actualTitle = titleMap.get(title.toLowerCase());
-//     if (!actualTitle) {
-//       console.warn(`No matching PDF found for title: ${title}`);
-//       continue;
-//     }
-
-//     const pdfPath = path.join(folderPath, `${actualTitle}.pdf`);
-//     try {
-//       // Read the PDF file and get the number of pages
-//       const dataBuffer = await fs.readFile(pdfPath);
-//       const uint8Array = new Uint8Array(dataBuffer);
-//       const pdf = await pdfjsLib.getDocument({ data: uint8Array }).promise;
-//       console.log('PDF: ' + pdf);
-//       const numPages = pdf.numPages;
-//       const matchingPages = [];
-
-//       // Iterate through each page
-//       for (let pageNum = 1; pageNum <= numPages; pageNum++) {
-//         const page = await pdf.getPage(pageNum);
-//         const textContent = await page.getTextContent();
-//         const pageText = textContent.items.map((item) => item.str).join(' ').replace(/\n/g, ' ');
-
-//         const wordRegex = new RegExp(`\\b${searchQuery}\\b`, 'i');
-        
-//         if (wordRegex.test(pageText)) {
-//           matchingPages.push({
-//             pageNum,
-//             text: pageText,
-//           });
-//         }
-//         console.log('Matching Pages: ' + matchingPages);
-//       }
-
-//       if (matchingPages.length > 0) {
-//         results[actualTitle] = matchingPages;
-//       }
-//     } catch (error) {
-//       console.error(`Error processing ${actualTitle}.pdf:`, error);
-//     }
-//   }
-
-//   return results;
-// }
 
 module.exports = { getSubjectsData, getPdfBookTitles, searchPdfs };
